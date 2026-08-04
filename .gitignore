@@ -216,3 +216,30 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+
+# ===== AI Project =====
+
+.env
+
+# IDE
+.vscode/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Local database
+*.sqlite3
+
+# AI Models
+*.bin
+*.pt
+*.pth
+*.gguf
+
+# Cache
+.cache/
