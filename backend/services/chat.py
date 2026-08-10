@@ -1,11 +1,13 @@
-class ChatService:
+from models.message import Message
 
+class ChatService:
 
     def __init__(
         self,
         character_service,
         personality_service,
         memory_service,
+        prompt_builder,
         llm_client
     ):
 
@@ -18,6 +20,9 @@ class ChatService:
         # 保存记忆服务
         self.memory_service = memory_service
 
+        # 保存提示词服务
+        self.prompt_builder = prompt_builder
+
         # 保存AI服务
         self.llm_client = llm_client
 
@@ -25,41 +30,77 @@ class ChatService:
 
     def chat(self,user_message):
 
-        # 获取角色信息
+
         character = self.character_service.get_character()
 
 
-        # 获取人格信息
         personality = self.personality_service.get_personality()
 
 
-        # 获取历史记忆
-        memory = self.memory_service.search()
+        # 先保存用户消息
+        self.memory_service.add_message(
+            "user",
+            user_message
+        )
 
 
-        # 生成Prompt
-        prompt = f"""
-        你现在扮演:
-        {character}
+        # 获取历史
+        short_memory = self.memory_service.get_history()
 
-        性格:
-        {personality}
+        long_memory = self.memory_service.long_memory.search()
 
-        历史:
-        {memory}
+        conversation_history = {
 
+            "short": short_memory,
 
-        用户:
-        {user_message}
-        """
+            "long": long_memory
+
+        }
 
 
-        # 调用AI
-        response = self.llm_client.chat(prompt)
+
+        message = Message(
+            "user",
+            user_message
+        )
 
 
-        # 保存回复
-        self.memory_service.save(user_message,response)
+        system_prompt = self.prompt_builder.build(
+            character,
+            personality,
+            conversation_history,
+            user_message
+        )
+
+
+        try:
+
+            response = self.llm_client.chat(
+                system_prompt,
+                message.content
+            )
+
+
+        except Exception as e:
+
+            print("LLM调用失败:",e)
+
+            return "抱歉，我刚刚走神了..."
+
+
+        # 保存AI回复
+
+        self.memory_service.add_message(
+            "assistant",
+            response
+        )
+
+
+        # 提取长期记忆
+
+        self.memory_service.process_memory(
+            user_message
+        )
 
 
         return response

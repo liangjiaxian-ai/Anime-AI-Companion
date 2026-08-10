@@ -2,7 +2,7 @@ from fastapi import APIRouter
 from models.chat import ChatRequest
 from services.character import load_character
 from services.personality import build_personality_prompt
-from core.ai import chat_with_ai
+from backend.core.llm_client import chat_with_ai
 
 router = APIRouter(
     prefix="/chat",

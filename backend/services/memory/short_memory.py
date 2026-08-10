@@ -1,0 +1,24 @@
+class ShortMemory:
+
+    def __init__(self):
+
+        self.history=[]
+
+
+    def add(
+        self,
+        role,
+        content
+    ):
+
+        self.history.append(
+            {
+                "role":role,
+                "content":content
+            }
+        )
+
+
+    def get_history(self):
+
+        return self.history[-20:]
