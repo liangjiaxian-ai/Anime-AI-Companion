@@ -4,44 +4,30 @@ class ChatService:
 
     def __init__(
         self,
+        db,
         character_service,
         personality_service,
         memory_service,
         prompt_builder,
         llm_client
     ):
+        self.db = db
 
-        # 保存角色服务
         self.character_service = character_service
-
-        # 保存人格服务
         self.personality_service = personality_service
-
-        # 保存记忆服务
         self.memory_service = memory_service
-
-        # 保存提示词服务
         self.prompt_builder = prompt_builder
-
-        # 保存AI服务
         self.llm_client = llm_client
 
 
 
-    def chat(self,user_message):
+    def chat(self, user_id, user_message):
 
 
         character = self.character_service.get_character()
 
 
         personality = self.personality_service.get_personality()
-
-
-        # 先保存用户消息
-        self.memory_service.add_message(
-            "user",
-            user_message
-        )
 
 
         # 获取历史
@@ -59,25 +45,42 @@ class ChatService:
 
 
 
+       # 创建用户消息
+
         message = Message(
-            "user",
-            user_message
+            role="user",
+            content=user_message,
+            user_id=user_id
         )
 
+
+        # 保存用户消息
+
+        self.db.add(message)
+        self.db.commit()
+
+
+
+        # 创建prompt
 
         system_prompt = self.prompt_builder.build(
             character,
             personality,
             conversation_history,
+            self.memory_service.user_profile.get(),
+            long_memory,
             user_message
         )
 
+
+
+        # 调用LLM
 
         try:
 
             response = self.llm_client.chat(
                 system_prompt,
-                message.content
+                user_message
             )
 
 
@@ -85,15 +88,22 @@ class ChatService:
 
             print("LLM调用失败:",e)
 
-            return "抱歉，我刚刚走神了..."
+            response = "抱歉，我暂时无法回答。"
+
 
 
         # 保存AI回复
 
-        self.memory_service.add_message(
-            "assistant",
-            response
+        assistant_message = Message(
+            role="assistant",
+            content=response,
+            user_id=user_id
         )
+
+
+        self.db.add(assistant_message)
+        self.db.commit()
+
 
 
         # 提取长期记忆
@@ -101,6 +111,7 @@ class ChatService:
         self.memory_service.process_memory(
             user_message
         )
+
 
 
         return response

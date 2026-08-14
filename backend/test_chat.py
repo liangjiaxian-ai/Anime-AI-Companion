@@ -4,6 +4,7 @@ from services.memory_service import MemoryService
 from services.prompt import PromptBuilder
 from services.chat import ChatService
 from core.llm_client import LLMClient
+from database.database import SessionLocal
 
 
 
@@ -17,8 +18,11 @@ prompt_builder = PromptBuilder()
 
 llm_client = LLMClient()
 
+db = SessionLocal()
+
 
 chat_service = ChatService(
+    db,
     character_service,
     personality_service,
     memory_service,
@@ -29,6 +33,7 @@ chat_service = ChatService(
 
 
 result = chat_service.chat(
+    1,
     "今天有点累"
 )
 

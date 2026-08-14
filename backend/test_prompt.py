@@ -4,11 +4,28 @@ from services.prompt import PromptBuilder
 builder = PromptBuilder()
 
 
+character = {
+    "name":"绫波丽",
+    "age":17
+}
+
+
+personality={
+    "temperament":"冷静",
+    "worldview":"..."
+}
+
+
 prompt = builder.build(
-    "星野",
-    "温柔，活泼",
-    "用户昨天考试失败",
-    "今天很累"
+    character,
+    personality,
+    {
+        "short": [],
+        "long": []
+    },
+    {},
+    [],
+    "你好"
 )
 
 

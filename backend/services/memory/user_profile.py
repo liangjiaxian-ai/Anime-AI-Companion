@@ -15,6 +15,10 @@ class UserProfile:
         self.profile[key] = value
 
 
+    def set(self,key,value):
+        
+        self.profile[key]=value
+
 
     def get(self):
 

@@ -5,11 +5,14 @@ class PromptBuilder:
         character,
         personality,
         conversation_history,
+        user_profile,
+        long_memory,
         message
     ):
 
         prompt = f"""
-你现在扮演:
+        
+角色设定：
 
 {character}
 
@@ -23,6 +26,23 @@ class PromptBuilder:
 
 {conversation_history}
 
+
+用户信息:
+
+{user_profile}
+
+
+相关记忆:
+
+{long_memory}
+
+
+# 回复规则
+
+1. 保持角色一致
+2. 参考用户信息
+3. 不重复询问已知信息
+4. 表现自然情绪
 
 用户:
 

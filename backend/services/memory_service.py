@@ -60,7 +60,7 @@ class MemoryService:
         value
     ):
 
-        self.user_profile.set(
+        self.user_profile.update(
             key,
             value
         )
