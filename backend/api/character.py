@@ -1,6 +1,7 @@
-from fastapi import APIRouter
-from services.character import get_character
+from fastapi import APIRouter, Depends
 
+from core.dependency import get_character_service
+from typing import Dict, Any
 
 router = APIRouter(
     prefix="/character",
@@ -9,5 +10,8 @@ router = APIRouter(
 
 
 @router.get("/")
-def character_info():
-    return get_character()
+def character(
+    character_service = Depends(get_character_service)
+) -> Dict[str, Any]:
+
+    return character_service.get_character()

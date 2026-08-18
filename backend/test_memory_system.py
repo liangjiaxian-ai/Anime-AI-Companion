@@ -1,3 +1,9 @@
+import sys
+
+if "pytest" in sys.modules:
+    import pytest
+    pytest.skip("Manual memory learning script; run it directly, not through pytest.", allow_module_level=True)
+
 from services.memory.short_memory import ShortMemory
 from services.memory.long_memory import LongMemory
 from services.memory.user_profile import UserProfile

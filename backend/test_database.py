@@ -1,3 +1,9 @@
+import sys
+
+if "pytest" in sys.modules:
+    import pytest
+    pytest.skip("Manual database learning script; run it directly, not through pytest.", allow_module_level=True)
+
 from database.database import Base, engine, SessionLocal
 from models.user import User
 from models.message import Message

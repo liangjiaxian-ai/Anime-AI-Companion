@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="和星野聊聊天，一个会慢慢记住你的 AI 动漫陪伴伙伴。" />
+    <title>星野 · Anime AI Companion</title>
+    <link rel="stylesheet" href="/assets/styles.css" />
+  </head>
+  <body>
+    <main class="app-shell">
+      <aside class="character-card" aria-label="角色资料">
+        <div class="moon">✦</div>
+        <p class="eyebrow">ANIME AI COMPANION</p>
+        <div class="avatar" aria-hidden="true">星</div>
+        <h1>星野</h1>
+        <p class="character-intro">温柔、好奇，也很愿意听你分享今天发生的事。</p>
+        <div class="traits" aria-label="性格标签">
+          <span>温柔</span><span>活泼</span><span>长久记忆</span>
+        </div>
+        <div class="privacy-note">✦ 你的聊天记录仅保存在本地 SQLite 数据库。</div>
+      </aside>
+
+      <section class="chat-card" aria-label="聊天窗口">
+        <header class="chat-header">
+          <div>
+            <p class="eyebrow">ONLINE NOW</p>
+            <h2>和星野聊聊吧</h2>
+          </div>
+          <label class="user-selector">用户 #<input id="user-id" type="number" min="1" value="1" aria-label="用户编号" /></label>
+        </header>
+
+        <div id="messages" class="messages" aria-live="polite">
+          <article class="message assistant-message">
+            <span class="message-name">星野</span>
+            <p>你好呀，我是星野。今天有什么想和我说的吗？</p>
+          </article>
+        </div>
+
+        <div class="suggestions" aria-label="推荐开场白">
+          <button type="button">今天有点累</button>
+          <button type="button">我喜欢看动漫</button>
+          <button type="button">你还记得我吗？</button>
+        </div>
+
+        <form id="chat-form" class="composer">
+          <label class="sr-only" for="message-input">输入消息</label>
+          <textarea id="message-input" rows="1" maxlength="2000" placeholder="想对星野说点什么？" required></textarea>
+          <button id="send-button" type="submit" aria-label="发送消息">发送 <span>↗</span></button>
+        </form>
+        <p id="status" class="status">按 Enter 发送，Shift + Enter 换行</p>
+      </section>
+    </main>
+    <script src="/assets/app.js" defer></script>
+  </body>
+</html>

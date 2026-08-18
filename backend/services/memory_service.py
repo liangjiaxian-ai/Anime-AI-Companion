@@ -7,15 +7,25 @@ from services.memory.memory_extractor import MemoryExtractor
 class MemoryService:
 
 
-    def __init__(self):
+    def __init__(self, user_id=None):
 
-        self.short_memory = ShortMemory()
+        self.user_id = user_id
+        self.short_memory = ShortMemory(user_id)
 
-        self.long_memory = LongMemory()
+        self.long_memory = LongMemory(user_id)
 
-        self.user_profile = UserProfile()
+        self.user_profile = UserProfile(user_id)
 
         self.extractor = MemoryExtractor()
+
+
+    def for_user(self, user_id):
+        """Create a user-scoped facade while retaining legacy test support."""
+        return MemoryService(user_id)
+
+
+    def ensure_user(self):
+        self.user_profile.ensure_user()
 
 
 

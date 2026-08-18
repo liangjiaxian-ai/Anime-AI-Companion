@@ -1,29 +1,27 @@
-from fastapi import APIRouter
-from models.chat import ChatRequest
-from services.character import load_character
-from services.personality import build_personality_prompt
-from backend.core.llm_client import chat_with_ai
+from fastapi import APIRouter, Depends, HTTPException, status
 
-router = APIRouter(
-    prefix="/chat",
-    tags=["Chat"]
-)
+from core.dependency import get_chat_service
+from core.llm_client import LLMClientError
+from models.chat import ChatRequest, ChatResponse
 
 
-@router.post("/")
-def chat(request: ChatRequest):
+router = APIRouter(prefix="/chat", tags=["Chat"])
 
-    character = load_character()
 
-    personality = build_personality_prompt()
+@router.post("/", response_model=ChatResponse)
+def chat(request: ChatRequest, chat_service=Depends(get_chat_service)):
+    message = request.message.strip()
+    if not message:
+        raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_CONTENT, detail="message cannot be blank")
 
-    reply = chat_with_ai(
-    personality,
-    request.message
-    )
+    try:
+        reply = chat_service.chat(user_id=request.user_id, user_message=message)
+    except LLMClientError as exc:
+        raise HTTPException(status_code=status.HTTP_503_SERVICE_UNAVAILABLE, detail=str(exc)) from exc
 
     return {
-    "user": request.message,
-    "character": character["name"],
-    "reply": reply
+        "user_id": request.user_id,
+        "user": message,
+        "character": chat_service.character_service.get_character()["name"],
+        "reply": reply,
     }

@@ -1,7 +1,10 @@
+import re
+
+
 class MemoryExtractor:
 
 
-    def extract(self,message):
+    def extract(self, message):
 
         profile = {}
 
@@ -17,28 +20,26 @@ class MemoryExtractor:
             name = name.split("。")[0]
             name = name.split(" ")[0]
 
-            profile["name"] = name
+            if name:
+                profile["name"] = name
 
 
         # 喜好
 
         if "我喜欢" in message:
 
-            thing = message.replace(
-                "我喜欢",
-                ""
-            )
+            thing = message.split("我喜欢", 1)[1]
+            thing = re.split(r"[，。！？!?\n]", thing, maxsplit=1)[0]
 
-            profile["like"] = thing
+            if thing.strip():
+                profile["like"] = thing.strip("，。！! ")
 
 
         # 长期记忆
 
         if len(message) > 3:
 
-            long_memory.append(
-                message
-            )
+            long_memory.append({"role": "user", "content": message.strip()})
 
 
         return {

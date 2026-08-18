@@ -1,3 +1,9 @@
+import sys
+
+if "pytest" in sys.modules:
+    import pytest
+    pytest.skip("Manual chat smoke script; run it directly, not through pytest.", allow_module_level=True)
+
 from services.chat import ChatService
 
 from services.character import CharacterService
@@ -28,7 +34,6 @@ db = SessionLocal()
 # 创建聊天服务
 
 chat_service = ChatService(
-    db,
     character_service,
     personality_service,
     memory_service,

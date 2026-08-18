@@ -1,24 +1,15 @@
-class ChatMessage:
-    """
-    聊天消息对象
+from pydantic import BaseModel, Field
 
-    用来保存：
-    1. 谁说的话
-    2. 说了什么
-    """
 
-    def __init__(self, role, content):
-        """
-        初始化聊天消息
+class ChatRequest(BaseModel):
+    """A message sent by one application user."""
 
-        role:
-            角色身份
-            user / assistant
+    user_id: int = Field(default=1, ge=1, description="Application user identifier")
+    message: str = Field(min_length=1, max_length=2_000, description="User message")
 
-        content:
-            消息内容
-        """
 
-        self.role = role
-
-        self.content = content
+class ChatResponse(BaseModel):
+    user_id: int
+    user: str
+    character: str
+    reply: str

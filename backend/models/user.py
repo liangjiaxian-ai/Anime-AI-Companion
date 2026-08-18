@@ -1,6 +1,6 @@
 from datetime import datetime
 from typing import TYPE_CHECKING
-from sqlalchemy import DateTime, String
+from sqlalchemy import DateTime, String, Text
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from database.database import Base
 from typing import TYPE_CHECKING
@@ -19,6 +19,12 @@ class User(Base):
     name: Mapped[str] = mapped_column(
         String(100),
         nullable=False
+    )
+
+    profile_json: Mapped[str] = mapped_column(
+        Text,
+        nullable=False,
+        default="{}"
     )
 
     created_at: Mapped[datetime] = mapped_column(

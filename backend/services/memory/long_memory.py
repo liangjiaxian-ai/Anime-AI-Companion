@@ -4,8 +4,8 @@ from models.long_memory import LongMemoryModel
 
 class LongMemory:
 
-    def __init__(self):
-        pass
+    def __init__(self, user_id=None):
+        self.user_id = user_id
 
 
     def add(self, item):
@@ -20,14 +20,15 @@ class LongMemory:
                 content = item["content"]
 
             # 防止重复记忆
-            existing = session.query(LongMemoryModel).filter_by(
-                role=role,
-                content=content
-            ).first()
+            query = session.query(LongMemoryModel).filter_by(role=role, content=content)
+            if self.user_id is not None:
+                query = query.filter_by(user_id=self.user_id)
+            existing = query.first()
 
             if existing is None:
 
                 memory = LongMemoryModel(
+                    user_id=self.user_id,
                     role=role,
                     content=content
                 )
@@ -47,9 +48,10 @@ class LongMemory:
 
         try:
 
-            memories = session.query(
-                LongMemoryModel
-            ).all()
+            query = session.query(LongMemoryModel)
+            if self.user_id is not None:
+                query = query.filter_by(user_id=self.user_id)
+            memories = query.order_by(LongMemoryModel.id.desc()).all()
 
             return [
                 {
@@ -70,9 +72,10 @@ class LongMemory:
 
         try:
 
-            memories = session.query(
-                LongMemoryModel
-            ).all()
+            query = session.query(LongMemoryModel)
+            if self.user_id is not None:
+                query = query.filter_by(user_id=self.user_id)
+            memories = query.order_by(LongMemoryModel.id.desc()).all()
 
             if keyword is None:
 

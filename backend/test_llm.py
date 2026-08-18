@@ -1,3 +1,9 @@
+import sys
+
+if "pytest" in sys.modules:
+    import pytest
+    pytest.skip("Manual provider smoke script; run it directly, not through pytest.", allow_module_level=True)
+
 from core.llm_client import LLMClient
 
 
